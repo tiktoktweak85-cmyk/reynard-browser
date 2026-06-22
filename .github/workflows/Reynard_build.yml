@@ -1,0 +1,43 @@
+name: Build Reynard Browser
+
+on:
+  workflow_dispatch: # Allows you to manually trigger the build from the GitHub actions tab
+
+jobs:
+  build:
+    runs-on: macos-14 # Uses a macOS environment with Xcode pre-installed
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode Version
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+
+      - name: Apply Engine Patches
+        run: |
+          chmod +x tools/development/apply-patches.sh
+          ./tools/development/apply-patches.sh
+
+      - name: Build Gecko Engine Frameworks
+        run: |
+          chmod +x tools/development/build-gecko.sh
+          ./tools/development/build-gecko.sh
+
+      - name: Compile Reynard Application
+        run: |
+          chmod +x tools/release/build-app.sh
+          ./tools/release/build-app.sh
+
+      - name: Package into IPA
+        run: |
+          chmod +x tools/release/create-ipa.sh
+          ./tools/release/create-ipa.sh
+
+      - name: Upload Finished IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Reynard-TrollStore
+          path: |
+            *.ipa
+            **/*.ipa
