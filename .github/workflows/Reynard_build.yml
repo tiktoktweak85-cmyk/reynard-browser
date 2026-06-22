@@ -11,10 +11,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive # <--- This is the crucial fix!
+          submodules: recursive
 
       - name: Select Xcode Version
         run: sudo xcode-select -s /Applications/Xcode_15.4.app
+
+      # Add this brand new step here!
+      - name: Update Gecko Engine
+        run: |
+          chmod +x tools/development/update-gecko.sh
+          ./tools/development/update-gecko.sh
 
       - name: Apply Engine Patches
         run: |
