@@ -1,15 +1,17 @@
 name: Build Reynard Browser
 
 on:
-  workflow_dispatch: # Allows you to manually trigger the build from the GitHub actions tab
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-14 # Uses a macOS environment with Xcode pre-installed
+    runs-on: macos-14
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: recursive # <--- This is the crucial fix!
 
       - name: Select Xcode Version
         run: sudo xcode-select -s /Applications/Xcode_15.4.app
